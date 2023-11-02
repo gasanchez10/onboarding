@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "@prisma/client": "^4.8.0",
+    "aws-sdk": "^2.1212.0"
+  }
+}

@@ -1,0 +1,260 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "rhel-openssl-1.0.x"]
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}      
+
+model User {
+  id            Int             @id @default(autoincrement())
+  name           String
+  fatherLastName String
+  motherLastName String
+  email         String
+  gender        String
+  phoneNumberCountry  String
+  phoneNumber   String
+  curp          String
+  maritalStatus String
+  birthDate     String
+  birthDateV2    DateTime @default(now())
+  city          String
+  photo_url     String
+  registryType  String 
+  referalCode   Int 
+  useType       String
+  created_time  String
+  isVerified       Boolean @default(false)
+  created_timeV2    DateTime @default(now())
+  last_edit_time   String 
+  last_edit_timeV2    DateTime @default(now())
+  acceptedTermsDate   DateTime @default(now())
+  lifeState     Boolean 
+  Message       Message[]
+  Contact       Contact[]
+  MessageStatus MessageStatus[]
+  usersSuscriptions usersSuscriptions[]
+   usersAddOns usersAddOns[]
+}
+
+model Message {
+  id        Int     @id @default(autoincrement())
+  author    User    @relation(fields: [authorId], references: [id])
+  authorId  Int
+  contact   Contact @relation(fields: [contactId], references: [id])
+  contactId Int
+  title         String
+  description   String
+  urlMultimedia String
+  multimediaType String
+  multimediaMeta String
+  thumbnailUrl   String
+  lifeState     String
+  status        String
+  isSend        Boolean
+  mediaType     Boolean
+  createDate    String
+  createDateV2 DateTime @default(now())
+  editDate      String
+  editDateV2 DateTime @default(now())
+  programDate   String
+  programDateV2 DateTime @default(now())
+  urlNft        String @default("")
+  isNfts        Boolean
+  idNft         String
+  statsId       String
+  folder        String @default("default")
+  chain         String @default("")
+  estandar      String @default("")
+  whatsapp       Boolean @default(true)
+  email       Boolean @default(true)
+  maxhastriest  Int    @default(3)
+  maxconfirmtries Int   @default(3)
+  uuid          String @default("")
+  MessageStatus MessageStatus[]
+   
+}
+
+model MessageStatus {
+  id          Int     @id @default(autoincrement())
+  author      User    @relation(fields: [authorId], references: [id])
+  authorId    Int
+  contact     Contact @relation(fields: [contactId], references: [id])
+  contactId   Int
+  message     Message @relation(fields: [messageId], references: [id])
+  messageId   Int
+  status      String
+  programDate String
+  programDateV2 DateTime @default(now())
+  data        Json
+  urlId       Int
+  messageError String @default("")
+}
+
+model Log {
+  id             Int          @id @default(autoincrement())
+  fecha          String
+  fechaV2    DateTime @default(now())
+  proceso        String
+  comentario     String
+}
+
+model Contact {
+  id            Int             @id @default(autoincrement())
+  author        User            @relation(fields: [authorId], references: [id])
+  authorId      Int
+  photoUrl      String
+  name          String
+  fatherLastName String
+  motherLastName String
+  relation      String
+  email         String
+  typeContact   String
+  phoneNumber   String
+  phoneNumberCountry  String
+  birthDate    String
+  birthDateV2    DateTime @default(now())
+  notes        String
+  trusted       Boolean @default(false)
+  hidden        Boolean @default(false)
+  Message       Message[]
+  MessageStatus MessageStatus[]
+}
+
+
+model WishesMessages {
+  id            Int             @id @default(autoincrement())
+  authorAcc     String
+  createDate    DateTime @default(now())
+  status        String
+  url           String
+  identifier    String   @default("Old version")
+  encelopeId    String   @default("No envelope available")
+}
+model Deletions {
+  id            Int             @id @default(autoincrement())
+  authorId      Int
+}
+
+model doubleFactor{
+
+  id          String     @id  @default(uuid())
+  authorId    String
+  attemptDate  DateTime @default(now())
+  code String
+  status String
+}
+
+
+model suscriptionsCatalogue {
+
+  id          Int           @id
+  planName        String
+  planprice       Int
+  allowedNfts     Int     
+  storage     Int
+  patrimonial Boolean
+  funeralWill Boolean
+  remains     Boolean
+  organs      Boolean
+  health      Boolean
+  dependants  Boolean
+  pets        Boolean
+  accounts    Boolean
+  vault       Boolean
+  familyHub   Boolean
+  support     Boolean
+  document    Int @default(1)
+  whoToInform   Int @default(1)
+  daysOfGrace  Int    @default(10000)
+  daysToExpire  Int    @default(10000)
+  status     String    @default("Enabled")
+  usersSuscriptions       usersSuscriptions[]
+
+}
+
+model usersSuscriptions {
+  id          String     @id  @default(uuid())
+  author      User    @relation(fields: [authorId], references: [id])
+  authorId    Int  
+  suscription      suscriptionsCatalogue    @relation(fields: [suscriptionType], references: [id])
+  suscriptionType    Int
+  suscriptionDate  DateTime @default(now())
+  paymentDate      DateTime @default(now())
+  expireDate       DateTime @default(now())
+  currency         String @default("USD")
+  status     String @default("Active")
+  paymentGateway String
+  paymentAmount  Float
+}
+
+
+
+
+model addOnsCatalogue {
+
+  id          Int           @id
+  addOnName        String
+  addOnprice       Int
+  allowedNfts     Int     
+  storage     Int
+  patrimonial Boolean
+  funeralWill Boolean
+  remains     Boolean
+  organs      Boolean
+  health      Boolean
+  dependants  Boolean
+  pets        Boolean
+  accounts    Boolean
+  vault       Boolean
+  familyHub   Boolean
+  support     Boolean
+  document    Int @default(1)
+  whoToInform   Int @default(1)
+  daysOfGrace  Int    @default(10000)
+  daysToExpire  Int    @default(10000)
+  status     String    @default("Enabled")
+  usersAddOns       usersAddOns[]
+
+}
+
+
+model usersAddOns {
+  id          String     @id  @default(uuid())
+  author      User    @relation(fields: [authorId], references: [id])
+  authorId    Int  
+  suscription      addOnsCatalogue    @relation(fields: [addOnType], references: [id])
+  addOnType    Int
+  addOnDate  DateTime @default(now())
+  paymentDate      DateTime @default(now())
+  expireDate       DateTime @default(now())
+  currency         String @default("USD")
+  status     String @default("Active")
+  paymentGateway String 
+  paymentAmount  Float
+}
+
+
+
+model referals {
+  id     String     @id  @default(uuid())
+  code   String     @default(uuid())
+  suscription Int   @default(2)
+  status String     @default("new")
+}
+
+model pushNotifications {
+  id     String     @id  @default(uuid())
+  status   String        @default("status")
+  title String           @default("titulo")
+  description String     @default("description")
+  link String     @default("link")
+}
+
+
