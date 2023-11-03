@@ -24,7 +24,7 @@ exports.handler = async (event) => {
         response.body = JSON.stringify(notifications)
     }
     catch (error) {
-        console.log('Paspost Error-> Request not found');
+        console.log('Paspost Error-> Generating signed URL error log');
         console.log(error)
         response.body = "Paspost Error-> Request not found"
         response.statusCode = 404
